@@ -1,0 +1,77 @@
+name: Terraform Azure
+
+on:
+  pull_request:
+    paths:
+      - "Terraform/**"
+      - ".github/workflows/terraform.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "Terraform/**"
+      - ".github/workflows/terraform.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  TF_IN_AUTOMATION: true
+  ARM_USE_OIDC: true
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  TF_VAR_resource_group_name: rg-sai-az-demo
+  TF_VAR_location: eastus
+
+defaults:
+  run:
+    working-directory: Terraform
+
+jobs:
+  terraform:
+    name: Terraform ${{ github.event_name == 'push' && 'apply' || 'plan' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && 'production' || 'pull-request' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: >-
+          terraform init -input=false
+          -backend-config="resource_group_name=${{ secrets.TFSTATE_RESOURCE_GROUP }}"
+          -backend-config="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT }}"
+          -backend-config="container_name=${{ secrets.TFSTATE_CONTAINER }}"
+          -backend-config="key=sai-az-repo.tfstate"
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        if: github.event_name != 'push'
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform plan for apply
+        if: github.event_name == 'push'
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform apply
+        if: github.event_name == 'push'
+        run: terraform apply -input=false -auto-approve tfplan
