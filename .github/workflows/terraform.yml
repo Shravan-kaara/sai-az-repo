@@ -52,12 +52,7 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform init
-        run: >-
-          terraform init -input=false
-          -backend-config="resource_group_name=${{ secrets.TFSTATE_RESOURCE_GROUP }}"
-          -backend-config="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT }}"
-          -backend-config="container_name=${{ secrets.TFSTATE_CONTAINER }}"
-          -backend-config="key=sai-az-repo.tfstate"
+        run: terraform init -input=false
 
       - name: Terraform validate
         run: terraform validate
