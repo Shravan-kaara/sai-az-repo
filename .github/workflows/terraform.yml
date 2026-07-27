@@ -1,17 +1,16 @@
 name: Terraform Azure
 
 on:
-  pull_request:
-    paths:
-      - "Terraform/**"
-      - ".github/workflows/terraform.yml"
-  push:
-    branches:
-      - main
-    paths:
-      - "Terraform/**"
-      - ".github/workflows/terraform.yml"
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose Terraform workflow action'
+        required: true
+        default: plan
+        type: choice
+        options:
+          - plan
+          - apply
 
 permissions:
   contents: read
@@ -32,9 +31,9 @@ defaults:
 
 jobs:
   terraform:
-    name: Terraform ${{ github.event_name == 'push' && 'apply' || 'plan' }}
+    name: Terraform ${{ github.event.inputs.action }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'push' && 'production' || 'pull-request' }}
+    environment: manual
 
     steps:
       - name: Checkout
@@ -65,13 +64,9 @@ jobs:
         run: terraform validate
 
       - name: Terraform plan
-        if: github.event_name != 'push'
-        run: terraform plan -input=false -out=tfplan
-
-      - name: Terraform plan for apply
-        if: github.event_name == 'push'
+        if: ${{ github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}
         run: terraform plan -input=false -out=tfplan
 
       - name: Terraform apply
-        if: github.event_name == 'push'
+        if: ${{ github.event.inputs.action == 'apply' }}
         run: terraform apply -input=false -auto-approve tfplan
