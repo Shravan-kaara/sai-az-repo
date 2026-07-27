@@ -33,7 +33,6 @@ jobs:
   terraform:
     name: Terraform ${{ github.event.inputs.action }}
     runs-on: ubuntu-latest
-    environment: manual
 
     steps:
       - name: Checkout
