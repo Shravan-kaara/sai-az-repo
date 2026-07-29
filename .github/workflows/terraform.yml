@@ -19,11 +19,15 @@ permissions:
 env:
   TF_IN_AUTOMATION: true
   ARM_USE_OIDC: true
-  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID || '19648671-81c1-4150-88fd-3053980bb7d5' }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID || '95d2feab-28a9-469a-a808-2ade1864440e' }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID || 'bf7b89b5-fefe-4098-8c61-e22533e2797c' }}
   TF_VAR_resource_group_name: rg-sai-az-demo
   TF_VAR_location: eastus
+  TF_VAR_vm_name: vm-sai-demo
+  TF_VAR_vm_size: Standard_B2s
+  TF_VAR_admin_username: ${{ secrets.AZURE_VM_ADMIN_USERNAME || 'useradmin' }}
+  TF_VAR_admin_password: ${{ secrets.AZURE_VM_ADMIN_PASSWORD || 'P@ssw0rd@123' }}
 
 defaults:
   run:
@@ -41,15 +45,26 @@ jobs:
       - name: Azure login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID || '19648671-81c1-4150-88fd-3053980bb7d5' }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID || '95d2feab-28a9-469a-a808-2ade1864440e' }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || 'bf7b89b5-fefe-4098-8c61-e22533e2797c' }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.5
 
       - name: Terraform format check
         run: terraform fmt -check -recursive
+
+      - name: Terraform preflight
+        run: terraform version
+
+      - name: RBAC reminder
+        run: echo "Ensure the Azure identity has Contributor on the target subscription and Storage Blob Data Contributor on the Terraform state storage account before applying."
+
+      - name: Confirm Windows VM inputs
+        run: echo "Deploying a Windows VM using the Terraform variable file and AVM module settings."
 
       - name: Terraform init
         run: terraform init -input=false
@@ -59,8 +74,8 @@ jobs:
 
       - name: Terraform plan
         if: ${{ github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply' }}
-        run: terraform plan -input=false -out=tfplan
+        run: terraform plan -input=false -var-file=terraform.tfvars -out=tfplan
 
       - name: Terraform apply
         if: ${{ github.event.inputs.action == 'apply' }}
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -input=false -auto-approve -var-file=terraform.tfvars tfplan
