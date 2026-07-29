@@ -1,7 +1,7 @@
 resource_group_name = "rg-sai-az-demo"
 location            = "eastus"
 vm_name             = "vm-sai-demo"
-vm_size             = "Standard_B1ms"
+vm_size             = "Standard_B2s"
 admin_username      = "useradmin"
 admin_password      = "P@ssw0rd@123"
 public_ip_sku       = "Standard"
