@@ -44,6 +44,10 @@ module "avm_res_compute_virtualmachine" {
     version   = "latest"
   }
 
+  security_profile = {
+    encryption_at_host_enabled = false
+  }
+
   tags = var.tags
 }
 
