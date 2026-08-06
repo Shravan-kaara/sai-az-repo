@@ -60,3 +60,27 @@ variable "tags" {
     managed_by = "terraform"
   }
 }
+
+variable "vm_name_2" {
+  description = "Name of the second Azure VM to create."
+  type        = string
+  default     = "vm-sai-demo-2"
+}
+
+variable "vm_size_2" {
+  description = "Size of the second Azure VM."
+  type        = string
+  default     = "Standard_B2s"
+}
+
+variable "address_space_2" {
+  description = "Address space for the second virtual network."
+  type        = string
+  default     = "10.20.0.0/16"
+}
+
+variable "subnet_prefix_2" {
+  description = "Address prefix for the second subnet."
+  type        = string
+  default     = "10.20.1.0/24"
+}
