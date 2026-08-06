@@ -28,6 +28,9 @@ env:
   TF_VAR_vm_size: Standard_B2s
   TF_VAR_admin_username: ${{ secrets.AZURE_VM_ADMIN_USERNAME || 'useradmin' }}
   TF_VAR_admin_password: ${{ secrets.AZURE_VM_ADMIN_PASSWORD || 'P@ssw0rd@123' }}
+  TF_VAR_storage_account_name: stgsaidemo
+  TF_VAR_account_tier: Standard
+  TF_VAR_account_replication_type: LRS
 
 defaults:
   run:

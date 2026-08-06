@@ -22,3 +22,18 @@ output "public_ip_address" {
   description = "Public IP address of the created Azure VM."
   value       = module.avm_vm.public_ip_address
 }
+
+output "storage_account_id" {
+  description = "ID of the created Azure Storage Account."
+  value       = module.avm_storage.storage_account_id
+}
+
+output "storage_account_name" {
+  description = "Name of the created Azure Storage Account."
+  value       = module.avm_storage.storage_account_name
+}
+
+output "storage_account_primary_blob_endpoint" {
+  description = "The primary blob endpoint of the storage account."
+  value       = module.avm_storage.storage_account_primary_blob_endpoint
+}

@@ -12,3 +12,8 @@ tags = {
   managed_by  = "terraform"
   environment = "dev"
 }
+
+# Storage Account configuration
+storage_account_name     = "stgsaidemo"
+account_tier             = "Standard"
+account_replication_type = "LRS"

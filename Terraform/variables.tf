@@ -60,3 +60,21 @@ variable "tags" {
     managed_by = "terraform"
   }
 }
+
+variable "storage_account_name" {
+  description = "Name of the Azure Storage Account (must be globally unique, 3-24 characters, lowercase letters and numbers)."
+  type        = string
+  default     = "stgsaidemo"
+}
+
+variable "account_tier" {
+  description = "Defines the Tier to use for this storage account. Valid options are Standard and Premium."
+  type        = string
+  default     = "Standard"
+}
+
+variable "account_replication_type" {
+  description = "Defines the type of replication to use for this storage account. Valid options are LRS, GRS, RAGRS, ZRS, GZRS and RAGZRS."
+  type        = string
+  default     = "LRS"
+}
