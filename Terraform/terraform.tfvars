@@ -14,7 +14,7 @@ tags = {
 }
 
 # Second VM configuration
-vm_name_2     = "vm-sai-demo-2"
-vm_size_2     = "Standard_D2alds_v7"
+vm_name_2       = "vm-sai-demo-2"
+vm_size_2       = "Standard_D2alds_v7"
 address_space_2 = "10.20.0.0/16"
 subnet_prefix_2 = "10.20.1.0/24"
