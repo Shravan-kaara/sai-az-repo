@@ -22,17 +22,3 @@ output "public_ip_address" {
   description = "Public IP address of the created Azure VM."
   value       = module.avm_vm.public_ip_address
 }
-output "vm_2_id" {
-  description = "ID of the second created Azure VM."
-  value       = module.avm_vm_2.vm_id
-}
-
-output "vm_2_name" {
-  description = "Name of the second created Azure VM."
-  value       = module.avm_vm_2.vm_name
-}
-
-output "vm_2_public_ip_address" {
-  description = "Public IP address of the second created Azure VM."
-  value       = module.avm_vm_2.public_ip_address
-}
