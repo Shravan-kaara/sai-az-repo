@@ -24,13 +24,6 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID || 'bf7b89b5-fefe-4098-8c61-e22533e2797c' }}
   TF_VAR_resource_group_name: rg-sai-az-demo
   TF_VAR_location: eastus
-  TF_VAR_vm_name: vm-sai-demo
-  TF_VAR_vm_size: Standard_B2s
-  TF_VAR_admin_username: ${{ secrets.AZURE_VM_ADMIN_USERNAME || 'useradmin' }}
-  TF_VAR_admin_password: ${{ secrets.AZURE_VM_ADMIN_PASSWORD || 'P@ssw0rd@123' }}
-  TF_VAR_storage_account_name: stgsaidemo
-  TF_VAR_account_tier: Standard
-  TF_VAR_account_replication_type: LRS
 
 defaults:
   run:
